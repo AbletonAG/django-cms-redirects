@@ -22,14 +22,14 @@ class CMSRedirect(models.Model):
     
     def page_site(self):
         if self.page:
-            return u'%s' % self.page.site
-        return u''
+            return '%s' % self.page.site
+        return ''
     page_site.short_description = "Page Site"
     
     def actual_response_code(self):
         if self.page or self.new_path:
             return self.response_code
-        return u'410'
+        return '410'
     actual_response_code.short_description = "Response Code"
     
     class Meta:

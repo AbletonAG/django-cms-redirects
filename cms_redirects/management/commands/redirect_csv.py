@@ -1,4 +1,4 @@
-import StringIO
+import io
 import csv
 import datetime
 import operator
@@ -50,7 +50,7 @@ class Command(BaseCommand):
     
     
     def execute(self, *args, **options):
-        output = StringIO.StringIO()
+        output = io.StringIO()
         writer = csv.writer(output)
         writer.writerow(['Old Url','New Url','Response Code'])
         writer.writerow(["/old.html","/new",'301, 302 or 410'])
@@ -67,14 +67,14 @@ class Command(BaseCommand):
             num_months = int(options["num_analytics_months"])
             start_date = end_date - datetime.timedelta(num_months*365/12)
             data = account.get_data(start_date=start_date, end_date=end_date, dimensions=['pagepath'], metrics=['visits'])
-            sorted_data = sorted(data.dict.iteritems(), key=operator.itemgetter(1), reverse=True)
+            sorted_data = sorted(iter(data.dict.items()), key=operator.itemgetter(1), reverse=True)
             for url, visits in sorted_data:
                 writer.writerow([csv_safe(url),'',''])
                 
-        print output.getvalue()
+        print(output.getvalue())
         
 def csv_safe(s):
-    if isinstance(s,basestring):
+    if isinstance(s,str):
         return s.encode("utf-8")
     else:
         return s

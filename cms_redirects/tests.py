@@ -21,7 +21,7 @@ class TestRedirects(unittest.TestCase):
 
         title = Title(title="Hello world!")
         title.page = page
-        title.language = u'en'
+        title.language = 'en'
         title.save()
 
     def test_301_page_redirect(self):
