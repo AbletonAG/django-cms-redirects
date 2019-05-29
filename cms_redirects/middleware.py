@@ -21,8 +21,8 @@ def remove_query(path):
 
 
 class RedirectFallbackMiddleware(object):
-    def process_exception(self, request, exception):
-        if isinstance(exception, http.Http404):
+    def process_response(self, request, response):
+        if response.status_code == 404:
 
             # First try the whole path.
             path = request.get_full_path()

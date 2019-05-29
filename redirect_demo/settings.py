@@ -5,7 +5,6 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 gettext = lambda s: s
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -67,7 +66,7 @@ SECRET_KEY = '*^aor)8+d(lg_#ezg0&8sc&&pju^18#t=clw-2ief&q#+%(s*n'
 LANGUAGE_CODE = 'en'
 
 CMS_TEMPLATES = (
-		('home.html', gettext('Homepage')),
+    ('home.html', gettext('Homepage')),
 )
 
 CMS_PLACEHOLDER_CONF = {
@@ -89,7 +88,12 @@ LANGUAGES = (
         ('en', gettext('English')),
 )
 
-CMS_LANGUAGES = LANGUAGES
+CMS_LANGUAGES = {
+    SITE_ID: [{
+        'code': 'en',
+        'name': 'English',
+    }]
+}
 
 GOOGLE_MAPS_API_KEY = ""
 
@@ -110,23 +114,30 @@ DEBUG_TOOLBAR_CONFIG = {
 # Allowed IPs for the Django Debug Toolbar
 INTERNAL_IPS = ('127.0.0.1',)
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-    'django.template.loaders.eggs.load_template_source',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-        "django.core.context_processors.auth",
-        'django.core.context_processors.debug',
-        "django.core.context_processors.i18n",
-        "django.core.context_processors.request",
-        "django.core.context_processors.media",
-        "cms.context_processors.media",
-        'django.contrib.messages.context_processors.messages',
-)
-
+TEMPLATES = [
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [
+        os.path.join(PROJECT_DIR,'templates'),
+    ],
+    'OPTIONS': {
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.request',
+            'django.template.context_processors.media',
+            'cms.context_processors.media',
+            'django.contrib.messages.context_processors.messages',
+        ),
+        'loaders': (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+        ),
+        'debug': DEBUG,
+    }
+}
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -137,18 +148,10 @@ MIDDLEWARE_CLASSES = (
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.media.PlaceholderMediaMiddleware',
     'cms_redirects.middleware.RedirectFallbackMiddleware',
 )
 
 ROOT_URLCONF = 'redirect_demo.urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-	os.path.join(PROJECT_DIR,'templates'),
-)
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_DIR, "fixtures"),
@@ -162,16 +165,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'cms',
     'menus',
-    'cms.plugins.text',
-    'mptt',
-    'publisher',
-    'south',
-    'appmedia',
+    'treebeard',
     'cms_redirects',
 )
-
-
-SOUTH_TESTS_MIGRATE = False
 
 try:
     from settings_dev import *
