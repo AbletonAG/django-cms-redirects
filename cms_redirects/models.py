@@ -22,7 +22,7 @@ class CMSRedirect(models.Model):
 
     def page_site(self):
         if self.page:
-            return '%s' % self.page.site
+            return '%s' % self.page.node.site
         return ''
     page_site.short_description = "Page Site"
 
